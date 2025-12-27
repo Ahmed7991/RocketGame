@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +9,8 @@ public class Movement : MonoBehaviour
     // CACHE - e.g. references for readability or speed
     // STATE - private instance (member) variables
 
-    [SerializeField] float mainThrust = 100f;
-    [SerializeField] float rotationThrust = 1f;
+    [SerializeField] float mainThrust = 4f; // Updated default for non-deltaTime force
+    [SerializeField] float rotationThrust = 100f;
     [SerializeField] AudioClip mainEngine;
 
     [SerializeField] ParticleSystem mainEngineParticles;
@@ -64,7 +64,9 @@ public class Movement : MonoBehaviour
 
     void StartThrusting()
     {
-        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        // Removed Time.deltaTime from AddRelativeForce to ensure force is framerate independent.
+        // ForceMode.Force (default) applies a continuous force over the physics step.
+        rb.AddRelativeForce(Vector3.up * mainThrust);
         if (!audioSource.isPlaying)
         {
             audioSource.PlayOneShot(mainEngine);
