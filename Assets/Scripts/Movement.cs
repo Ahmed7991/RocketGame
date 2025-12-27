@@ -9,8 +9,8 @@ public class Movement : MonoBehaviour
     // CACHE - e.g. references for readability or speed
     // STATE - private instance (member) variables
 
-    [SerializeField] float mainThrust = 4f; // Updated default for non-deltaTime force
-    [SerializeField] float rotationThrust = 100f;
+    [SerializeField] float mainThrust = 100f; // Updated default for non-deltaTime force
+    [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
 
     [SerializeField] ParticleSystem mainEngineParticles;
