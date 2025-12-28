@@ -183,10 +183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2a11174334812642b114806446583e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-
   mainThrust: 11
   rotationThrust: 100
-
   mainEngine: {fileID: 8300000, guid: 9fa491770d9668849abe552c3a50cc09, type: 3}
   mainEngineParticles: {fileID: 2757249101954114704}
   leftThrusterParticles: {fileID: 551998486956758386}
