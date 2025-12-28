@@ -13,7 +13,6 @@ public class Movement : MonoBehaviour
     [SerializeField] float mainThrust = 10f; // Default value in code. Editor value overrides this!
     [Tooltip("Speed of rotation in degrees per second.")]
     [SerializeField] float rotationThrust = 100f;
-
     [SerializeField] AudioClip mainEngine;
 
     [SerializeField] ParticleSystem mainEngineParticles;
