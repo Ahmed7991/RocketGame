@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    // PARAMETERS - for tuning, typically set in the editor
-    // CACHE - e.g. references for readability or speed
-    // STATE - private instance (member) variables
+    // PARAMETERS - for tuning, typically set in the editor
+    // CACHE - e.g. references for readability or speed
+    // STATE - private instance (member) variables
 
-    [SerializeField] float mainThrust = 100f; // Updated default for non-deltaTime force
-    [SerializeField] float rotationThrust = 1f;
+    [Tooltip("Force applied when thrusting. Increase to make the rocket faster.")]
+    [SerializeField] float mainThrust = 10f; // Default value in code. Editor value overrides this!
+    [Tooltip("Speed of rotation in degrees per second.")]
+    [SerializeField] float rotationThrust = 100f;
+
     [SerializeField] AudioClip mainEngine;
 
     [SerializeField] ParticleSystem mainEngineParticles;
@@ -19,6 +22,7 @@ public class Movement : MonoBehaviour
 
     Rigidbody rb;
     AudioSource audioSource;
+    bool isThrusting = false;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +36,14 @@ public class Movement : MonoBehaviour
     {
         ProcessThrust();
         ProcessRotation();
+    }
+
+    void FixedUpdate()
+    {
+        if (isThrusting)
+        {
+            rb.AddRelativeForce(Vector3.up * mainThrust);
+        }
     }
 
     void ProcessThrust()
@@ -64,9 +76,7 @@ public class Movement : MonoBehaviour
 
     void StartThrusting()
     {
-        // Removed Time.deltaTime from AddRelativeForce to ensure force is framerate independent.
-        // ForceMode.Force (default) applies a continuous force over the physics step.
-        rb.AddRelativeForce(Vector3.up * mainThrust);
+        isThrusting = true;
         if (!audioSource.isPlaying)
         {
             audioSource.PlayOneShot(mainEngine);
@@ -79,6 +89,7 @@ public class Movement : MonoBehaviour
 
     private void StopThrusting()
     {
+        isThrusting = false;
         audioSource.Stop();
         mainEngineParticles.Stop();
     }
