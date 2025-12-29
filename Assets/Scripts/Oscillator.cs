@@ -8,15 +8,24 @@ public class Oscillator : MonoBehaviour
     [SerializeField] Vector3 movementVector;
     float movementFactor;
     [SerializeField] float period = 2f;
+
+    Rigidbody rb;
     
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.isKinematic = true;
+
         startingPosition = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
+    // FixedUpdate is called once per physics update
+    void FixedUpdate()
     {
         if (period <= Mathf.Epsilon) { return; }
         float cycles = Time.time / period;  // continually growing over time
@@ -27,6 +36,6 @@ public class Oscillator : MonoBehaviour
         movementFactor = (rawSinWave + 1f) / 2f;   // recalculated to go from 0 to 1 so its cleaner
         
         Vector3 offset = movementVector * movementFactor;
-        transform.position = startingPosition + offset;
+        rb.MovePosition(startingPosition + offset);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,10 +12,16 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField] ParticleSystem successParticles;
     [SerializeField] ParticleSystem crashParticles;
 
+    [SerializeField] KeyCode nextLevelKey = KeyCode.L;
+    [SerializeField] KeyCode collisionToggleKey = KeyCode.C;
+
     AudioSource audioSource;
 
     bool isTransitioning = false;
     bool collisionDisabled = false;
+
+    const string FriendlyTag = "Friendly";
+    const string FinishTag = "Finish";
 
     void Start() 
     {
@@ -28,11 +35,11 @@ public class CollisionHandler : MonoBehaviour
 
     void RespondToDebugKeys()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(nextLevelKey))
         {
             LoadNextLevel();
         }
-        else if (Input.GetKeyDown(KeyCode.C))
+        else if (Input.GetKeyDown(collisionToggleKey))
         {
             collisionDisabled = !collisionDisabled;  // toggle collision
         } 
@@ -44,10 +51,10 @@ public class CollisionHandler : MonoBehaviour
         
         switch (other.gameObject.tag)
         {
-            case "Friendly":
+            case FriendlyTag:
                 Debug.Log("This thing is friendly");
                 break;
-            case "Finish":
+            case FinishTag:
                 StartSuccessSequence();
                 break;
             default:
@@ -63,7 +70,7 @@ public class CollisionHandler : MonoBehaviour
         audioSource.PlayOneShot(success);
         successParticles.Play();
         GetComponent<Movement>().enabled = false;
-        Invoke("LoadNextLevel", levelLoadDelay);
+        StartCoroutine(LoadLevelRoutine(LoadNextLevel));
     }
 
     void StartCrashSequence()
@@ -73,7 +80,13 @@ public class CollisionHandler : MonoBehaviour
         audioSource.PlayOneShot(crash);
         crashParticles.Play();
         GetComponent<Movement>().enabled = false;
-        Invoke("ReloadLevel", levelLoadDelay);
+        StartCoroutine(LoadLevelRoutine(ReloadLevel));
+    }
+
+    IEnumerator LoadLevelRoutine(Action levelLoadAction)
+    {
+        yield return new WaitForSeconds(levelLoadDelay);
+        levelLoadAction();
     }
 
     void LoadNextLevel()
